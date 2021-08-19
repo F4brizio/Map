@@ -1,0 +1,16 @@
+{
+    "name": "fabrizio/map-php",
+    "description": "Use map in PHP",
+    "autoload": {
+        "psr-4": {
+            "Fabrizio\\MapPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Fabrizio Piminchumo",
+            "email": "f4brizio.21@gmail.com"
+        }
+    ],
+    "require": {}
+}
