@@ -1,6 +1,6 @@
 <?php
 
-namespace Fabrizio\MapPhp;
+namespace Fabrizio\Map;
 
 /**
  * Class Map
@@ -84,13 +84,15 @@ class Map implements \Iterator {
      * or null if this map contains no mapping for the key.
      *
      * @param $key
-     * @return int|null
+     * @return mixed|int|null
      */
     private function getIntKey($key){
         if (!($key instanceof $this->k)) return null;
-        while($element = current($this->keys)) {
-            if (key($this->keys) == $key){
-                return key($this->keys);
+        while($e = current($this->keys)) {
+            $a = key($this->keys);
+            $b = $key;
+            if ($a == $b){
+                return intval(key($this->keys));
             }
             next($this->keys);
         }

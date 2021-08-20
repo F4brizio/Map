@@ -3,7 +3,7 @@
     "description": "Use map in PHP",
     "autoload": {
         "psr-4": {
-            "Fabrizio\\MapPhp\\": "src/"
+            "Fabrizio\\Map\\": "src/"
         }
     },
     "authors": [
