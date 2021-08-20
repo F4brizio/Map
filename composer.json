@@ -1,5 +1,5 @@
 {
-    "name": "fabrizio/map-php",
+    "name": "fabrizio/map",
     "description": "Use map in PHP",
     "autoload": {
         "psr-4": {
