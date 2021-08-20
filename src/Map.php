@@ -10,8 +10,8 @@ use Exception;
  */
 class Map implements \Iterator {
 
-    private $dataMap = [];
-    private $position = 0;
+    private array $dataMap = [];
+    private int $position = 0;
     private $k;
     private $v;
 
@@ -164,9 +164,9 @@ class Map implements \Iterator {
     }
 
     /**
-     * @return bool|float|int|mixed|string|null
+     * @return array
      */
-    public function key()
+    public function key(): array
     {
         return (array_column($this->dataMap, 'key'))[$this->position];
     }
@@ -188,9 +188,10 @@ class Map implements \Iterator {
     }
 
     /**
-     *
+     * @return array
      */
-    public function values(){
+    public function values(): array
+    {
         return array_column($this->dataMap, 'value');
     }
 
@@ -198,8 +199,8 @@ class Map implements \Iterator {
      *
      */
     #public function entrySet(){
-
     #}
+
     public function valid(): bool
     {
         return isset(($this->values())[$this->position]);
