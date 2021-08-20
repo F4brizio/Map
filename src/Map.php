@@ -10,10 +10,8 @@ use Exception;
  */
 class Map implements \Iterator {
 
+    private $dataMap = [];
     private $position = 0;
-    private $keys = [];
-    private $values = [];
-
     private $k;
     private $v;
 
@@ -24,7 +22,7 @@ class Map implements \Iterator {
      */
     public function __construct($k,$v)
     {
-        if (!($k && $v)) throw new Exception('Null k & v');
+        if (!($k && $v)) throw new Exception('NullPointerException');
         $this->k = $k; $this->v = $v;
     }
 
@@ -33,8 +31,9 @@ class Map implements \Iterator {
      *
      * @return int the number of key-value mappings in this map
      */
-    public function size(){
-        return count($this->values);
+    public function size(): int
+    {
+        return count($this->dataMap);
     }
 
     /**
@@ -42,8 +41,9 @@ class Map implements \Iterator {
      *
      * @return bool if this map contains no key-value mappings
      */
-    public function isEmpty(){
-        return count($this->values) == 0;
+    public function isEmpty(): bool
+    {
+        return count($this->dataMap) == 0;
     }
 
     /**
@@ -53,10 +53,11 @@ class Map implements \Iterator {
      * @param mixed $key key whose presence in this map is to be tested
      * @return bool if this map contains a mapping for the specified key
      */
-    public function containsKey($key){
+    public function containsKey(&$key): bool
+    {
         if (!($key)) throw new Exception('NullPointerException');
         if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
-        return in_array($key,$this->keys);
+        return in_array($key,array_column($this->dataMap, 'key'));
     }
 
     /**
@@ -67,10 +68,11 @@ class Map implements \Iterator {
      * @return bool if this map maps one or more keys to the specified value
      * @throws Exception
      */
-    public function containsValue($value){
+    public function containsValue($value): bool
+    {
         if (!($value)) throw new Exception('NullPointerException');
         if (!($value instanceof $this->v)) throw new Exception('ClassCastException');
-        return in_array($value,$this->values);
+        return in_array($value,array_column($this->dataMap, 'value'));
     }
 
     /**
@@ -83,31 +85,8 @@ class Map implements \Iterator {
     public function get($key){
         if (!($key)) throw new Exception('NullPointerException');
         if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
-        $keyInt = $this->getIntKey($key);
-        if (!$keyInt) return null;
-        return $this->values[$keyInt] ?? null;
+        return $this->dataMap[$this->getUniqueID($key)]['value'] ?? null;
     }
-
-    /**
-     * Returns the value to which the specified key is mapped,
-     * or null if this map contains no mapping for the key.
-     *
-     * @param $key
-     * @return mixed|int|null
-     */
-    private function getIntKey($key){
-        if (!($key instanceof $this->k)) return null;
-        while($e = current($this->keys)) {
-            $a = key($this->keys);
-            $b = $key;
-            if ($a == $b){
-                return intval(key($this->keys));
-            }
-            next($this->keys);
-        }
-        return null;
-    }
-
 
     /**
      * @param mixed $key key with which the specified value is to be associated
@@ -120,9 +99,14 @@ class Map implements \Iterator {
         if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
         if (!($value)) throw new Exception('NullPointerException');
         if (!($value instanceof $this->v)) throw new Exception('ClassCastException');
-        $this->values[] = $value;
-        $this->keys[] = $key;
+        $this->dataMap[$this->getUniqueID($key)] = array('key' => $key, 'value' => $value);
         return $value;
+    }
+
+    public function getUniqueID($dat): int
+    {
+        return spl_object_id($dat);
+        #return spl_object_hash($dat);
     }
 
     /**
@@ -135,14 +119,7 @@ class Map implements \Iterator {
     public function remove($key){
         if (!($key)) throw new Exception('NullPointerException');
         if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
-        $keyInt = $this->getIntKey($key);
-        if (!$keyInt) return null;
-        if ($this->values[$keyInt]){
-            $temp = $this->values[$keyInt];
-            unset($this->values[$keyInt]);
-            unset($this->keys[$keyInt]);
-            return $temp;
-        }
+        unset($this->dataMap[$this->getUniqueID($key)]);
         return null;
     }
 
@@ -157,8 +134,7 @@ class Map implements \Iterator {
         if (!($map instanceof Map)) throw new Exception('ClassCastException');
         foreach ($map as $k => $v) {
             if ($k && $v){
-                $this->keys[] = $k;
-                $this->values[] = $v;
+                $this->dataMap[$this->getUniqueID($k)] = array('key' => $k, 'value' => $v);
             }
         }
     }
@@ -168,8 +144,7 @@ class Map implements \Iterator {
      * The map will be empty after this call returns.
      */
     public function clear(){
-        $this->values = [];
-        $this->keys = [];
+        $this->dataMap = [];
     }
 
     /**
@@ -177,7 +152,7 @@ class Map implements \Iterator {
      */
     public function current()
     {
-        return $this->values[$this->position] ?? null;
+        return (array_column($this->dataMap, 'value'))[$this->position] ?? null;
     }
 
     /**
@@ -193,8 +168,9 @@ class Map implements \Iterator {
      */
     public function key()
     {
-        return $this->keys[$this->position] ?? $this->position;
+        return (array_column($this->dataMap, 'key'))[$this->position];
     }
+
 
     /**
      *
@@ -205,25 +181,17 @@ class Map implements \Iterator {
     }
 
     /**
-     * @return bool
-     */
-    public function valid(): bool
-    {
-        return isset($this->values[$this->position]);
-    }
-
-    /**
      *
      */
     public function keySet(){
-        return $this->keys;
+        return array_column($this->dataMap, 'key');
     }
 
     /**
      *
      */
     public function values(){
-        return $this->values;
+        return array_column($this->dataMap, 'value');
     }
 
     /**
@@ -232,4 +200,8 @@ class Map implements \Iterator {
     #public function entrySet(){
 
     #}
+    public function valid(): bool
+    {
+        return isset(($this->values())[$this->position]);
+    }
 }
