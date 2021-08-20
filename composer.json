@@ -6,14 +6,15 @@
             "Fabrizio\\Map\\": "src/"
         }
     },
+    "require-dev": {
+        "monolog/monolog": "^2.3"
+    },
+    "license": "MIT",
     "authors": [
         {
             "name": "Fabrizio Piminchumo",
             "email": "f4brizio.21@gmail.com"
         }
     ],
-    "require-dev": {
-        "monolog/monolog": "^2.3"
-    },
-    "license": "MIT"
+    "require": {}
 }
