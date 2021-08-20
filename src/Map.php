@@ -8,7 +8,6 @@ namespace Fabrizio\MapPhp;
  */
 class Map implements \Iterator {
 
-
     private $position = 0;
     private $keys = [];
     private $values = [];
@@ -74,6 +73,7 @@ class Map implements \Iterator {
      *
      */
     public function get($key){
+        if (!($key instanceof $this->k)) return null;
         $keyInt = $this->getIntKey($key);
         if (!$keyInt) return null;
         return $this->values[$keyInt] ?? null;
@@ -87,6 +87,7 @@ class Map implements \Iterator {
      * @return int|null
      */
     private function getIntKey($key){
+        if (!($key instanceof $this->k)) return null;
         while($element = current($this->keys)) {
             if (key($this->keys) == $key){
                 return key($this->keys);
@@ -108,7 +109,7 @@ class Map implements \Iterator {
         if (!($value)) throw new \Exception('Null V');
         $this->validType($key,$value);
         $this->values[] = $value;
-        $this->keys[] = $value;
+        $this->keys[] = $key;
         return $value;
     }
 
