@@ -2,6 +2,8 @@
 
 namespace Fabrizio\Map;
 
+use Exception;
+
 /**
  * Class Map
  * @package Fabrizio\MapPhp
@@ -22,7 +24,7 @@ class Map implements \Iterator {
      */
     public function __construct($k,$v)
     {
-        if (!($k && $v)) throw new \Exception('Null k & v');
+        if (!($k && $v)) throw new Exception('Null k & v');
         $this->k = $k; $this->v = $v;
     }
 
@@ -52,6 +54,8 @@ class Map implements \Iterator {
      * @return bool if this map contains a mapping for the specified key
      */
     public function containsKey($key){
+        if (!($key)) throw new Exception('NullPointerException');
+        if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
         return in_array($key,$this->keys);
     }
 
@@ -61,8 +65,11 @@ class Map implements \Iterator {
      *
      * @param mixed $value value whose presence in this map is to be tested
      * @return bool if this map maps one or more keys to the specified value
+     * @throws Exception
      */
     public function containsValue($value){
+        if (!($value)) throw new Exception('NullPointerException');
+        if (!($value instanceof $this->v)) throw new Exception('ClassCastException');
         return in_array($value,$this->values);
     }
 
@@ -71,9 +78,11 @@ class Map implements \Iterator {
      * @return mixed|null the value to which the specified key is mapped, or
      * null if this map contains no mapping for the key.
      *
+     * @throws Exception
      */
     public function get($key){
-        if (!($key instanceof $this->k)) return null;
+        if (!($key)) throw new Exception('NullPointerException');
+        if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
         $keyInt = $this->getIntKey($key);
         if (!$keyInt) return null;
         return $this->values[$keyInt] ?? null;
@@ -104,25 +113,16 @@ class Map implements \Iterator {
      * @param mixed $key key with which the specified value is to be associated
      * @param mixed $value value to be associated with the specified key
      * @return mixed the previous value associated with key
-     * @throws \Exception
+     * @throws Exception
      */
     public function put($key, $value){
-        if (!($key)) throw new \Exception('Null K');
-        if (!($value)) throw new \Exception('Null V');
-        $this->validType($key,$value);
+        if (!($key)) throw new Exception('NullPointerException');
+        if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
+        if (!($value)) throw new Exception('NullPointerException');
+        if (!($value instanceof $this->v)) throw new Exception('ClassCastException');
         $this->values[] = $value;
         $this->keys[] = $key;
         return $value;
-    }
-
-    /**
-     * @param mixed $key
-     * @param mixed $value
-     * @throws \Exception
-     */
-    private function validType($key, $value){
-        if ((!($key instanceof $this->k))) throw new \Exception('Error type K');
-        if ((!($value instanceof $this->v))) throw new \Exception('Error type V');
     }
 
     /**
@@ -130,9 +130,11 @@ class Map implements \Iterator {
      *
      * @param mixed $key key whose mapping is to be removed from the map
      * @return mixed|null the previous value associated with key
+     * @throws Exception
      */
     public function remove($key){
-
+        if (!($key)) throw new Exception('NullPointerException');
+        if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
         $keyInt = $this->getIntKey($key);
         if (!$keyInt) return null;
         if ($this->values[$keyInt]){
@@ -148,8 +150,11 @@ class Map implements \Iterator {
      * Copies all of the mappings from the specified map to this map.
      *
      * @param Map $map mappings to be stored in this map
+     * @throws Exception
      */
     public function putAll(Map $map){
+        if (!($map)) throw new Exception('NullPointerException');
+        if (!($map instanceof Map)) throw new Exception('ClassCastException');
         foreach ($map as $k => $v) {
             if ($k && $v){
                 $this->keys[] = $k;
@@ -211,20 +216,20 @@ class Map implements \Iterator {
      *
      */
     public function keySet(){
-
+        return $this->keys;
     }
 
     /**
      *
      */
     public function values(){
-
+        return $this->values;
     }
 
     /**
      *
      */
-    public function entrySet(){
+    #public function entrySet(){
 
-    }
+    #}
 }
