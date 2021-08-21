@@ -57,7 +57,7 @@ class Map implements \Iterator {
     {
         if (!($key)) throw new Exception('NullPointerException');
         if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
-        return in_array($key,array_column($this->dataMap, 'key'));
+        return in_array($key,$this->keySet());
     }
 
     /**
@@ -72,7 +72,7 @@ class Map implements \Iterator {
     {
         if (!($value)) throw new Exception('NullPointerException');
         if (!($value instanceof $this->v)) throw new Exception('ClassCastException');
-        return in_array($value,array_column($this->dataMap, 'value'));
+        return in_array($value,$this->values());
     }
 
     /**
@@ -119,8 +119,9 @@ class Map implements \Iterator {
     public function remove($key){
         if (!($key)) throw new Exception('NullPointerException');
         if (!($key instanceof $this->k)) throw new Exception('ClassCastException');
+        if (!($this->containsKey($key))) return false;
         unset($this->dataMap[$this->getUniqueID($key)]);
-        return null;
+        return true;
     }
 
     /**
@@ -152,7 +153,7 @@ class Map implements \Iterator {
      */
     public function current()
     {
-        return (array_column($this->dataMap, 'value'))[$this->position] ?? null;
+        return $this->values()[$this->position] ?? null;
     }
 
     /**
@@ -164,11 +165,11 @@ class Map implements \Iterator {
     }
 
     /**
-     * @return array
+     * @return mixed
      */
-    public function key(): array
+    public function key()
     {
-        return (array_column($this->dataMap, 'key'))[$this->position];
+        return $this->keySet()[$this->position];
     }
 
 
@@ -194,12 +195,6 @@ class Map implements \Iterator {
     {
         return array_column($this->dataMap, 'value');
     }
-
-    /**
-     *
-     */
-    #public function entrySet(){
-    #}
 
     public function valid(): bool
     {
