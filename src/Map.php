@@ -184,7 +184,8 @@ class Map implements \Iterator {
     /**
      *
      */
-    public function keySet(){
+    public function keySet(): array
+    {
         return array_column($this->dataMap, 'key');
     }
 
