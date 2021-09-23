@@ -34,7 +34,7 @@ var_dump($map->get($xclass));
 
 ### Author
 
-F4brizio - <f4brizio.21@gmail.com><br />
+@F4brizio - <f4brizio.21@gmail.com><br />
 
 ### License
 
